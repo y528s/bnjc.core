@@ -17,7 +17,7 @@ Enter a name and email to start. This preview does not send or store the email, 
 | Z | Sprint |
 | Shift | Dash |
 | Up / Down | Climb a ladder / drop a level |
-| E | Bank carried oil at the marked Yofi counters, take the lifeguard's shield, light the chanukiah |
+| E | Go through the glowing Yofi door to bank your oil, rest in the guest-room bed, take the lifeguard's shield, light the chanukiah |
 | Esc | Pause |
 
 On a phone, hold it sideways. The controls float over the bottom corners: left thumb for climb, left and right; right thumb for jump, throw, bank/use, sprint, dash and weapon. If you turn the phone upright, the game pauses and asks you to turn it back.
@@ -26,13 +26,21 @@ On a phone, hold it sideways. The controls float over the bottom corners: left t
 
 After the Temple Snuffer falls, walk to the chanukiah. Stand under the raised shamash in the middle and press E, then stand under each branch and press E. Each light spends one banked oil drop. Cold gusts can put a branch out: press E under it again to relight it for free. If the oil runs out, the miracle lights the rest.
 
+## Your runner
+
+After your name and email, pick your runner: skin tone, hair colour, jacket and trousers colours, a head covering (none, kippah, beanie, cap or headscarf) and a scarf, or press "Surprise me". Your choice is remembered on your device.
+
+## Banking and resting
+
+Oil you carry can be lost if you are hurt. Walk through the glowing door at Yofi (press E, or USE on a phone) and watch your oil pour into the jar and lock away: banked oil is safe and is what lights the chanukiah. Energy and a heart come back only by resting in the guest-room bed (press E at the bed).
+
 ## The tutorial
 
-The first two scenes teach by doing. A panel at the top left shows one step at a time with a pointer at what to do: walk, jump the bollard, grab oil, stun the car, jump on it, grab a wrap, bank oil, jump the tables, sprint and climb the ladder. On a phone the matching button pulses. On an iPhone, tap Share, then Add to Home Screen, to play full screen without Safari's bars.
+Wick, a little flame, teaches the first two scenes. A speech bubble shows one step at a time with a pointer at what to do: walk, jump the bollard, grab oil, stun the car, jump on it, grab a wrap, bank oil, beat a sliding Yofi table, sprint and climb the ladder. Wick cheers every time you get one. On a phone the matching button pulses. On an iPhone, tap Share, then Add to Home Screen, to play full screen without Safari's bars.
 
 ## Scene goals
 
-Each scene has one goal, shown in the panel at the top left with your progress and its points: beat a baddie in the courtyard, collect all five wraps at Yofi, light four lanterns in the Lanes, a flawless tea party in the Pavilion Gardens (no hits), dodge three gull attacks on the promenade, gather 30 oil in the underpass and 12 in the guest room, bank your oil at the second Yofi, beat the Sea Life Shadow, beat the Greek war elephant on the road east, and climb the i360 to its top platform. The baddies wear Greek helmets because the Chanukah story is about the Greek empire.
+Each scene has one goal, shown in the panel at the top left with your progress and its points: beat a baddie in the courtyard, collect all five wraps at Yofi, light four lanterns in the Lanes, a flawless tea party in the Pavilion Gardens (no hits), dodge three gull attacks on the promenade, gather 30 oil in the underpass, rest in the guest-room bed, bank your oil at the second Yofi, beat the Sea Life Shadow, beat the Greek war elephant on the road east, and climb the i360 to its top platform. The baddies wear Greek helmets because the Chanukah story is about the Greek empire.
 
 ## Scoring
 
