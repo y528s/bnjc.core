@@ -16,16 +16,23 @@ Enter a name and email to start. This preview does not send or store the email, 
 | C | Switch weapon |
 | Z | Sprint |
 | Shift | Dash |
-| F | Swing on a rope |
 | Up / Down | Climb a ladder / drop a level |
 | E | Bank carried oil at the marked Yofi counters, take the lifeguard's shield, light the chanukiah |
 | Esc | Pause |
 
-On a phone, hold it sideways. The controls float over the bottom corners: left thumb for climb, left and right; right thumb for jump, throw, bank/use, sprint, dash, swing and weapon. If you turn the phone upright, the game pauses and asks you to turn it back.
+On a phone, hold it sideways. The controls float over the bottom corners: left thumb for climb, left and right; right thumb for jump, throw, bank/use, sprint, dash and weapon. If you turn the phone upright, the game pauses and asks you to turn it back.
 
 ## The ending
 
 After the Temple Snuffer falls, walk to the chanukiah. Stand under the raised shamash in the middle and press E, then stand under each branch and press E. Each light spends one banked oil drop. Cold gusts can put a branch out: press E under it again to relight it for free. If the oil runs out, the miracle lights the rest.
+
+## The tutorial
+
+The first two scenes teach by doing. A panel at the top left shows one step at a time with a pointer at what to do: walk, jump the bollard, grab oil, stun the car, jump on it, grab a wrap, bank oil, jump the tables, sprint and climb the ladder. On a phone the matching button pulses. On an iPhone, tap Share, then Add to Home Screen, to play full screen without Safari's bars.
+
+## Scene goals
+
+Each scene has one goal, shown in the panel at the top left with your progress and its points: beat a baddie in the courtyard, collect all five wraps at Yofi, light four lanterns in the Lanes, a flawless tea party in the Pavilion Gardens (no hits), dodge three gull attacks on the promenade, gather 30 oil in the underpass and 12 in the guest room, bank your oil at the second Yofi, beat the Sea Life Shadow, beat the Greek war elephant on the road east, and climb the i360 to its top platform. The baddies wear Greek helmets because the Chanukah story is about the Greek empire.
 
 ## Scoring
 
@@ -36,4 +43,4 @@ Oil drops are 10 points each, with a small bonus for streaks. Defeating baddies 
 - No shared online leaderboard, email submission or prize registration.
 - Some foreground art and the balance of each scene still need play-testing across devices and browsers.
 - Tested so far in a desktop Chrome browser with touch emulation; not yet on real phones, in Safari or in Firefox. Sound has not been checked.
-- A run has a seven-minute ceiling.
+- A run has a nine-minute ceiling.
