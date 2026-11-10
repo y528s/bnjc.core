@@ -12,7 +12,7 @@ Enter a name and email to start. This preview does not send or store the email, 
 |---|---|
 | Left / Right, or A / D | Move |
 | Space | Jump (press again in the air for a super jump) |
-| X | Throw a latke |
+| X, or click / tap the stage | Throw a latke toward that side |
 | C | Switch weapon |
 | Z | Sprint |
 | Shift | Dash |
@@ -34,9 +34,13 @@ After your name and email, pick your runner: skin tone, hair colour, jacket and 
 
 Oil you carry can be lost if you are hurt. About every other scene there is a navy BNJC door. Walk to it and press E (USE on a phone, or up). Inside, your oil pours into a jar and locks away (banked oil is safe and is what lights the chanukiah), your energy refills, some doors give a heart, and your spot is saved: if you are caught you restart at the last door you used.
 
+## Power-ups
+
+A sufganiyah is an oil magnet for 12 seconds, gelt doubles oil points for 12 seconds, and a gull feather gives higher jumps for 12 seconds. Wraps give a short speed boost, the aura is a 10-second shield and the coffee makes you bigger.
+
 ## Yofi coffee, oil shots and the lifeguard
 
-Drink a Yofi coffee to grow to 1.5 times your size; the next hit shrinks you back instead of costing a heart. A latke that touches a loose oil drop collects it for double. Stand by the promenade lifeguard and press E for a 10-second life-ring shield.
+Drink a Yofi coffee to grow to 1.5 times your size, with a bigger body to match; the next hit shrinks you back instead of costing a heart. A latke that touches a loose oil drop collects it for double. Stand by the promenade lifeguard and press E for a 10-second life-ring shield.
 
 ## Your nickname
 
@@ -48,7 +52,7 @@ Wick, a little flame, teaches the first two scenes. A speech bubble shows one st
 
 ## Scene goals
 
-Each scene has one goal, shown in the panel at the top left with your progress and its points: beat a baddie in the courtyard, collect all five wraps at Yofi, light four lanterns in the Lanes, a flawless tea party in the Pavilion Gardens (no hits), dodge three gull attacks on the promenade, gather 30 oil in the underpass, rest in the guest-room bed, bank your oil at the second Yofi, beat the Sea Life Shadow, beat the Greek war elephant on the road east, and climb the i360 to its top platform. The baddies wear Greek helmets because the Chanukah story is about the Greek empire.
+Each scene has one goal, shown in the panel at the top left with your progress and its points: beat a baddie in the courtyard, collect all five wraps at Yofi, light four lanterns in the Lanes, a flawless tea party in the Pavilion Gardens (no hits), dodge three gull attacks on the promenade, gather 30 oil in the underpass, rest in the guest-room bed, bank your oil at the second Yofi, beat the Sea Life Shadow, beat the Greek war elephant on the road east (jump on its head, or throw latkes when it opens), and climb the i360 to its top platform. The baddies wear Greek helmets because the Chanukah story is about the Greek empire.
 
 ## Hidden surprises
 
