@@ -1,5 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8">
-<meta name="robots" content="noindex,nofollow"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="theme-color" content="#101a38"><title>Lamp Run</title>
 <style>
 :root{--ink:#191b6f;--coral:#e44935;--gold:#f4b742;--cream:#fff8ed;--teal:#087d7a}*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font:16px/1.45 Arial,sans-serif}.shell{max-width:1280px;margin:auto;padding:18px;display:grid;grid-template-columns:minmax(0,1fr) 220px;grid-template-areas:"head head" "game board" "controls controls" "foot foot";gap:10px}.head{grid-area:head}.frame{grid-area:game}.raceboard{grid-area:board;position:static;align-self:start;width:auto}.touch{grid-area:controls}.footer{grid-area:foot}.race-toggle{display:none}.head{display:flex;justify-content:space-between;align-items:center;margin:0 4px 10px}.brand{font-weight:900;letter-spacing:.15em}.sub{font-size:12px;opacity:.7}.frame{position:relative;overflow:hidden;border-radius:22px;aspect-ratio:16/9;background:#272749;box-shadow:0 18px 48px #20204b30}canvas{width:100%;height:100%;display:block}.hud{position:absolute;top:12px;left:12px;right:12px;display:flex;gap:7px;align-items:center;pointer-events:none}.hud.hidden{display:none}.chip{background:#fffdf0e8;border-radius:999px;padding:7px 12px;font-weight:800;font-size:13px;box-shadow:0 3px 12px #12163822;white-space:nowrap}.chip small{font-weight:500;opacity:.65}.energy{width:120px;height:9px;display:inline-block;background:#d5d2e4;border-radius:6px;overflow:hidden;vertical-align:middle;margin-left:5px}.energy i{display:block;height:100%;width:0;background:linear-gradient(90deg,#29b5a7,#f3ca50);transition:width .1s}.fill{flex:1}.hudbutton{pointer-events:auto;border:0;border-radius:999px;background:#fffdf0e8;color:var(--ink);font-weight:800;padding:8px 11px;cursor:pointer}.runbar{position:absolute;left:18px;right:18px;bottom:12px;height:7px;border-radius:8px;background:#fff8;overflow:hidden;pointer-events:none}.runbar i{height:100%;display:block;background:linear-gradient(90deg,#f4b742,#e44935);width:0;transition:width .1s}.overlay{position:absolute;inset:0;display:grid;place-items:center;padding:18px;background:#15173d77}.overlay.hidden{display:none}.kitchen-overlay{background:rgba(23,22,39,.18)}.kitchen-card{background:rgba(255,252,245,.95);border:3px solid #c99056;box-shadow:0 25px 70px #20150f70;backdrop-filter:blur(3px)}
@@ -224,6 +223,106 @@ input,textarea{-webkit-user-select:text;user-select:text}
   const DOORS=[{id:'first-yofi',x:1060,heart:false,bg:'yofi'},{id:'d2',x:3150,heart:true,bg:'home'},{id:'d3',x:4450,heart:false,bg:'home'},{id:'d4',x:6350,heart:true,bg:'home'},{id:'d5',x:7950,heart:false,bg:'bnjcroom'},{id:'bed',x:8850,heart:true,bg:'bnjcroom'},{id:'return-yofi',x:9860,heart:true,bg:'yofi'},{id:'d8',x:12050,heart:true,bg:'home'},{id:'d9',x:14450,heart:false,bg:'home'},{id:'d10',x:16640,heart:true,bg:'home'}];
   const yofiTables=[{x:470,w:44,kind:'bollard'}];
   const lifeguard={x:6200,claimed:false,flexUntil:0,ringUntil:0};
+  /* ---- Easter eggs: small hidden surprises. None is needed to finish a run, and each pays out once per run. */
+  const eggs={win:{x:2565,step:0,spinUntil:0,done:false},tapN:0,tapT:-9,konami:false,partyUntil:0,near:0,flexed:false,still:0,gull:null,gullDone:false,hatGone:false,manners:false,skin:'',prevE:false,trailT:0,fx:[]};
+  const DREIDEL=[['נ','NUN'],['ג','GIMEL'],['ה','HEY'],['ש','SHIN']];
+  function eggsReset(){Object.assign(eggs.win,{step:0,spinUntil:0,done:false});Object.assign(eggs,{tapN:0,tapT:-9,partyUntil:eggs.konami?6:0,near:0,flexed:false,still:0,gull:null,gullDone:false,hatGone:false,manners:false,prevE:false,trailT:0,fx:[]});}
+  /* Special nicknames change the runner a little; the name is only ever checked here. */
+  function eggSkinFor(n){const k=String(n||'').toLowerCase().replace(/[^a-z]/g,'');return k==='maccabee'||k==='judah'?'m':k==='sufganiyah'||k==='sufganiya'?'j':'';}
+  const eggFx=(x,y,vx,vy,life,c,r,g=0,scr=false)=>{if(eggs.fx.length<260)eggs.fx.push({x,y,vx,vy,life,max:life,c,r,g,scr});};
+  function eggsUpdate(dt){
+    const pe=isDown('KeyE'),press=pe&&!eggs.prevE;eggs.prevE=pe;
+    /* Dreidel in the Lanes shop window: press E beside it to spin. Nun, Gimel, Hey, Shin. */
+    const w=eggs.win;
+    if(!w.done&&Math.abs(hero.x-w.x)<90&&press&&time>w.spinUntil){
+      w.spinUntil=time+1.1;w.step++;const d=DREIDEL[w.step-1];playSfx(520+w.step*130,.16,'triangle');
+      if(w.step>=4){w.done=true;score+=100;message('Nes gadol hayah sham! A great miracle happened there. +100',3.4);playSfx(1040,.25,'triangle');for(let i=0;i<22;i++)eggFx(w.x,GROUND-100,(Math.random()-.5)*260,-60-Math.random()*180,1.2,'#ffe18b',2+Math.random()*3,320);}
+      else message(`${d[0]}  ${d[1]}`,.9);
+    }
+    /* Wick's party: the Konami code on the title screen, or tapping Wick five times, brings hats and falling gelt. */
+    if(time<eggs.partyUntil&&Math.random()<dt*14)eggFx(Math.random()*W,-10,(Math.random()-.5)*40,60+Math.random()*60,3.4,'#ffd45a',5+Math.random()*3,70,true);
+    /* The lifeguard flexes if you keep him company for three seconds. */
+    const nearLg=hero.x>5900&&hero.x<6490&&Math.abs(hero.x-lifeguard.x)<170;
+    if(nearLg&&!eggs.flexed){eggs.near+=dt;if(eggs.near>=3){eggs.flexed=true;lifeguard.flexUntil=Math.max(lifeguard.flexUntil,time+3.2);score+=50;message('Lifeguard flex! +50',2.4);playSfx(660,.15,'triangle');playSfx(990,.2,'triangle');for(let i=0;i<14;i++)eggFx(lifeguard.x+(Math.random()-.5)*60,GROUND-120+Math.random()*40,(Math.random()-.5)*120,-40-Math.random()*90,.9,'#fff1c5',2+Math.random()*2,0);}}else if(!nearLg)eggs.near=0;
+    /* A cheeky gull: stand still on the promenade for ten seconds and it borrows your hat, then gives it back. */
+    const still=hero.grounded&&Math.abs(hero.vx)<6&&!hero.climbing&&!isDown('ArrowLeft','ArrowRight','KeyA','KeyD'),prom=hero.x>4600&&hero.x<6400;
+    if(!eggs.gull&&!eggs.gullDone){if(prom&&still){eggs.still+=dt;if(eggs.still>=10)eggs.gull={t:0,sx:hero.x+520,sy:GROUND-320,x:hero.x+520,y:GROUND-320,f:-1,gx:0,gy:0,took:false};}else eggs.still=0;}
+    const g=eggs.gull;
+    if(g){g.t+=dt;const hx=hero.x+8,hy=hero.y+2,px=g.x,py=g.y;
+      if(g.t<1.6){const k=g.t/1.6,s=k*k*(3-2*k);g.x=g.sx+(hx-g.sx)*s;g.y=g.sy+(hy-g.sy)*s-Math.sin(k*Math.PI)*30;}
+      else if(g.t<5.1){if(!g.took){g.took=true;g.gx=g.x;g.gy=g.y;eggs.hatGone=!!(look.head||look.neck);playSfx(300,.2,'sawtooth');message('Cheeky gull!',1.6);for(let i=0;i<8;i++)eggFx(g.x,g.y,(Math.random()-.5)*160,-30-Math.random()*70,.9,'#ffffff',2+Math.random()*2,160);}const k=(g.t-1.6)/3.5;g.x=g.gx+k*700;g.y=g.gy-k*280;}
+      else if(g.t<7){const k=(g.t-5.1)/1.9,s=k*k*(3-2*k),ox=g.gx+700,oy=g.gy-280;g.x=ox+(hx-ox)*s;g.y=oy+(hy-oy)*s-Math.sin(k*Math.PI)*34;}
+      else if(g.t<8.6){if(eggs.hatGone||!g.gave){g.gave=true;eggs.hatGone=false;score+=50;message('Hat returned. Manners, gull! +50',2.4);playSfx(880,.15,'triangle');for(let i=0;i<10;i++)eggFx(hx,hy-6,(Math.random()-.5)*140,-40-Math.random()*80,.9,'#ffe18b',2+Math.random()*2,200);}const k=(g.t-7)/1.6;g.x=hx+k*420;g.y=hy-k*240;}
+      else{eggs.gull=null;eggs.gullDone=true;}
+      if(eggs.gull)g.f=g.x>=px?1:-1;
+    }
+    /* Table manners: all five Yofi sliders beaten without a single bump. */
+    if(!eggs.manners&&zs[1]&&zs[1].slider>=5&&!zs[1].hits){eggs.manners=true;score+=250;message('Table manners badge! +250',3.2);playSfx(784,.18,'triangle');playSfx(1175,.25,'triangle');for(let i=0;i<20;i++)eggFx(hero.x+(Math.random()-.5)*50,hero.y+10,(Math.random()-.5)*220,-80-Math.random()*160,1.1,i%2?'#ffe18b':'#e0433a',2+Math.random()*3,300);}
+    /* Maccabee: a golden spark trail behind the runner. */
+    if(eggs.skin==='m'&&hero.grounded&&Math.abs(hero.vx)>40){eggs.trailT-=dt;if(eggs.trailT<=0){eggs.trailT=.045;eggFx(hero.x-hero.face*14,hero.y+HERO_H-8,-hero.face*20+(Math.random()-.5)*20,-30-Math.random()*40,.6,'#ffd45a',2+Math.random()*2,0);}}
+    for(const f of eggs.fx){f.life-=dt;f.x+=f.vx*dt;f.y+=f.vy*dt;f.vy+=f.g*dt;}
+    eggs.fx=eggs.fx.filter(f=>f.life>0);
+  }
+  function drawEggGull(sx,sy,f,t,hat){
+    ctx.save();ctx.translate(sx,sy);ctx.scale(-f,1);const fl=Math.sin(t*18)*13;
+    ctx.fillStyle='#f4f6f8';ctx.strokeStyle='rgba(30,30,40,.65)';ctx.lineWidth=1.3;
+    ctx.beginPath();ctx.ellipse(0,0,19,8,-.12,0,7);ctx.fill();ctx.stroke();
+    ctx.beginPath();ctx.moveTo(-4,-2);ctx.quadraticCurveTo(-8,-22-fl,-22,-16-fl*1.2);ctx.quadraticCurveTo(-14,-8,-9,1);ctx.closePath();ctx.fillStyle='#d3d9e0';ctx.fill();ctx.stroke();
+    ctx.beginPath();ctx.moveTo(2,-1);ctx.quadraticCurveTo(8,-17+fl,20,-12+fl);ctx.quadraticCurveTo(12,-6,7,2);ctx.closePath();ctx.fill();ctx.stroke();
+    ctx.fillStyle='#f4f6f8';ctx.beginPath();ctx.arc(-18,-4,6,0,7);ctx.fill();ctx.stroke();
+    ctx.fillStyle='#f2a93b';ctx.beginPath();ctx.moveTo(-23,-5);ctx.lineTo(-33,-2);ctx.lineTo(-23,-1);ctx.closePath();ctx.fill();ctx.stroke();
+    ctx.fillStyle='#14161c';ctx.beginPath();ctx.arc(-19,-6,1.4,0,7);ctx.fill();
+    if(hat){const c=ACCENTS[look.accent];ctx.fillStyle=c;ctx.strokeStyle='rgba(25,14,30,.78)';ctx.beginPath();ctx.ellipse(-6,13,10,5,0,0,7);ctx.fill();ctx.stroke();}
+    ctx.restore();
+  }
+  function eggsDraw(cam){
+    const w=eggs.win;
+    /* The dreidel display cabinet in the Lanes: a little glass-fronted shop cabinet standing on the cobbles. */
+    if(Math.abs(hero.x-w.x)<720){const sx=w.x-cam,spin=time<w.spinUntil;
+      ctx.save();
+      const gl=ctx.createRadialGradient(sx,GROUND-86,4,sx,GROUND-86,70);gl.addColorStop(0,'rgba(255,214,130,.45)');gl.addColorStop(1,'rgba(255,214,130,0)');ctx.fillStyle=gl;ctx.fillRect(sx-80,GROUND-170,160,170);
+      ctx.fillStyle='rgba(20,10,14,.28)';ctx.beginPath();ctx.ellipse(sx,GROUND+2,46,7,0,0,7);ctx.fill();
+      ctx.lineJoin='round';ctx.strokeStyle='#2a1810';ctx.lineWidth=2.5;
+      ctx.fillStyle='#5a3626';ctx.beginPath();ctx.roundRect(sx-38,GROUND-48,76,48,4);ctx.fill();ctx.stroke();
+      ctx.fillStyle='#d9a441';ctx.fillRect(sx-38,GROUND-50,76,5);ctx.fillRect(sx-30,GROUND-36,60,3);
+      const gg=ctx.createLinearGradient(sx,GROUND-132,sx,GROUND-50);gg.addColorStop(0,'#ffe9b0');gg.addColorStop(1,'#f2b45a');
+      ctx.fillStyle=gg;ctx.beginPath();ctx.roundRect(sx-33,GROUND-130,66,80,5);ctx.fill();
+      ctx.strokeStyle='#6a4632';ctx.lineWidth=4;ctx.stroke();ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(sx,GROUND-130);ctx.lineTo(sx,GROUND-50);ctx.moveTo(sx-33,GROUND-90);ctx.lineTo(sx+33,GROUND-90);ctx.stroke();
+      ctx.fillStyle='#d9a441';ctx.beginPath();ctx.moveTo(sx-38,GROUND-130);ctx.lineTo(sx,GROUND-150);ctx.lineTo(sx+38,GROUND-130);ctx.closePath();ctx.fill();ctx.strokeStyle='#2a1810';ctx.lineWidth=2.5;ctx.stroke();
+      ctx.fillStyle='#ffd45a';for(let i=0;i<3;i++){ctx.beginPath();ctx.arc(sx-22+i*7,GROUND-56,3,0,7);ctx.fill();}
+      const ph=spin?(1.1-(w.spinUntil-time))*14:time*1.6,sq=Math.max(.18,Math.abs(Math.cos(ph)));
+      ctx.translate(sx,GROUND-72);ctx.scale(1.15,1.15);ctx.fillStyle='#3f6fc4';ctx.strokeStyle='#14224a';ctx.lineWidth=1.6;ctx.beginPath();ctx.moveTo(-3*sq,-18);ctx.lineTo(3*sq,-18);ctx.lineTo(0,-28);ctx.closePath();ctx.fill();ctx.stroke();
+      ctx.fillStyle='#4f86e0';ctx.beginPath();ctx.moveTo(-13*sq,-18);ctx.lineTo(13*sq,-18);ctx.lineTo(13*sq,-2);ctx.lineTo(0,13);ctx.lineTo(-13*sq,-2);ctx.closePath();ctx.fill();ctx.stroke();
+      if(sq>.35){ctx.fillStyle='#fff6d0';ctx.font='bold 15px serif';ctx.textAlign='center';ctx.fillText(DREIDEL[Math.max(0,Math.min(3,spin||w.done?w.step-1:Math.floor(time*.5)%4))][0],0,-4);}
+      ctx.restore();
+      if(Math.abs(hero.x-w.x)<90&&!w.done){ctx.textAlign='center';drawPrompt(sx,GROUND-208,TOUCH?'USE · SPIN':'E · SPIN');ctx.textAlign='left';}
+    }
+    for(const f of eggs.fx){const a=Math.max(0,f.life/f.max);ctx.globalAlpha=Math.min(1,a*1.6);ctx.fillStyle=f.c;
+      const x=f.scr?f.x:f.x-cam;
+      if(f.scr){ctx.beginPath();ctx.ellipse(x,f.y,f.r*Math.abs(Math.cos(f.life*7)),f.r,0,0,7);ctx.fill();ctx.strokeStyle='#a87a10';ctx.lineWidth=1;ctx.stroke();}
+      else{ctx.beginPath();ctx.arc(x,f.y,f.r*(.4+a*.6),0,7);ctx.fill();}
+    }
+    ctx.globalAlpha=1;
+    const g=eggs.gull;if(g)drawEggGull(g.x-cam,g.y,g.f,time,g.t>1.6&&g.t<7&&eggs.hatGone);
+    /* Table manners badge: a small rosette in the bottom corner for the rest of the run. */
+    if(eggs.manners){ctx.save();ctx.translate(W-30,H-30);ctx.fillStyle='#e0433a';for(let k=0;k<10;k++){ctx.rotate(Math.PI/5);ctx.beginPath();ctx.ellipse(0,-14,4,7,0,0,7);ctx.fill();}ctx.fillStyle='#ffe18b';ctx.beginPath();ctx.arc(0,0,11,0,7);ctx.fill();ctx.strokeStyle='#8a5a10';ctx.lineWidth=1.5;ctx.stroke();ctx.fillStyle='#8a5a10';ctx.beginPath();for(let k=0;k<10;k++){const r=k%2?2.4:6;ctx.lineTo(Math.cos(k*Math.PI/5-Math.PI/2)*r,Math.sin(k*Math.PI/5-Math.PI/2)*r);}ctx.closePath();ctx.fill();ctx.restore();}
+  }
+  /* Wick wears a party hat during Wick's party. */
+  function eggsWickHat(wx,wy,r){if(!(eggs.konami||time<eggs.partyUntil))return;ctx.save();ctx.translate(wx+r*.12,wy-r*1.05);ctx.rotate(.18+Math.sin(time*5)*.08);ctx.fillStyle='#e0433a';ctx.strokeStyle='#070d20';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(-r*.5,r*.35);ctx.lineTo(0,-r*1.1);ctx.lineTo(r*.5,r*.35);ctx.closePath();ctx.fill();ctx.stroke();ctx.fillStyle='#ffe18b';for(let i=0;i<3;i++){ctx.beginPath();ctx.arc(-r*.14+i*r*.14,-r*.15+Math.abs(i-1)*r*.3,r*.07,0,7);ctx.fill();}ctx.beginPath();ctx.arc(0,-r*1.15,r*.18,0,7);ctx.fill();ctx.stroke();ctx.restore();}
+  /* Tap or click Wick five times (while he is teaching) and he throws a party. */
+  canvas.addEventListener('pointerdown',e=>{
+    if(mode!=='play'||!TUT[tutIdx])return;
+    const r=canvas.getBoundingClientRect(),x=(e.clientX-r.left)*W/r.width,y=(e.clientY-r.top)*H/r.height;
+    if(Math.hypot(x-wickPos.x,y-wickPos.y)>Math.max(34,42*uiS))return;
+    if(time-eggs.tapT>3)eggs.tapN=0;eggs.tapT=time;eggs.tapN++;playSfx(700+eggs.tapN*90,.08,'triangle');
+    for(let i=0;i<5;i++)sparks.push({x:wickPos.x,y:wickPos.y,vx:(Math.random()-.5)*220,vy:-60-Math.random()*160,life:1,r:2+Math.random()*3});
+    if(eggs.tapN>=5){eggs.tapN=0;eggs.partyUntil=time+7;message('Wick party! Hats and gelt!',2.4);playSfx(990,.2,'triangle');}
+  });
+  /* The golden helmet for the Maccabee nickname, drawn over the head. */
+  function eggsHelm(c,hx,hy){c.save();c.lineJoin='round';c.strokeStyle='rgba(60,35,5,.85)';c.lineWidth=1.4;const g=c.createLinearGradient(hx-13,hy-10,hx+13,hy+8);g.addColorStop(0,'#fff0a8');g.addColorStop(.5,'#e8b53a');g.addColorStop(1,'#a8741c');c.fillStyle=g;c.beginPath();c.moveTo(hx-13.5,hy+7);c.quadraticCurveTo(hx-14,hy-9,hx,hy-10);c.quadraticCurveTo(hx+14,hy-9,hx+13.5,hy+7);c.lineTo(hx+9,hy+5);c.lineTo(hx-9,hy+5);c.closePath();c.fill();c.stroke();c.fillStyle='#d6382f';c.beginPath();c.moveTo(hx-2.5,hy-9.6);c.quadraticCurveTo(hx,hy-19,hx+3,hy-17);c.quadraticCurveTo(hx+1,hy-12,hx+2.5,hy-9.6);c.closePath();c.fill();c.stroke();c.strokeStyle='#fff3b8';c.lineWidth=1.1;c.beginPath();c.moveTo(hx-11,hy+2);c.quadraticCurveTo(hx,hy-3,hx+11,hy+2);c.stroke();c.restore();}
+  /* Konami code on the title screen (up up down down left right left right B A). */
+  const KONAMI=['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','KeyB','KeyA'];let konamiAt=0;
+  addEventListener('keydown',e=>{if(mode!=='title'&&mode!=='look')return;if(e.code===KONAMI[konamiAt]){konamiAt++;if(konamiAt===KONAMI.length){konamiAt=0;eggs.konami=true;const d=document.createElement('div');d.textContent='Party mode on. Wick brings the hats.';d.style.cssText='position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:99;font:bold 13px "Courier New",monospace;background:#070d20;color:#ffe18b;border:2px solid #ffe18b;padding:8px 14px;border-radius:8px;';document.body.appendChild(d);setTimeout(()=>d.remove(),2800);}}else konamiAt=e.code===KONAMI[0]?1:0;});
   const gamePhases=[{start:0,end:1900,name:'BNJC & Yofi',place:'BNJC · Yofi'},{start:1900,end:6500,name:'Brighton',place:'Brighton'},{start:6500,end:11000,name:'Brighton discoveries',place:'Underpass · BNJC · Sea Life'},{start:11000,end:15900,name:'The road east',place:'Road east · i360'},{start:15900,end:WORLD_END,name:'Jerusalem finale',place:'Jerusalem'}];
   const oilRainZones=[[5100,5900],[13420,14000]];
   const keys = Object.create(null);let jumpPressed=false;
@@ -266,7 +365,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
     show(`<div class="lamp-title"><div class="title-main"><div class="lamp-crest"><span>✦</span></div><div class="eyebrow">BNJC presents</div><h1>LAMP RUN</h1><div class="lamp-route"><span>BRIGHTON</span><i></i><b>✦</b><i></i><span>JERUSALEM</span></div><p class="title-line">Gather the oil.<br>Light the way.</p><p class="story-text">You wake at BNJC on Chanukah night. The oil has been scattered across Brighton and the road to Jerusalem. Gather it, protect the story, and reach the Temple chanukiah before the light goes out.</p><div class="title-tags"><span>BRIGHTON → JERUSALEM</span><span>9 MINUTES MAX</span></div></div><div class="title-entry"><p class="prize-line">Enter your name and email to start your run.</p><form class="entry-form" id="entryForm" novalidate><label>Your name<input id="playerName" name="playerName" autocomplete="name" required maxlength="40" placeholder="Name"></label><label>Email address<input id="playerEmail" name="playerEmail" type="email" autocomplete="email" required placeholder="you@example.com"></label><button class="btn title-play" type="submit">Start your run</button></form><p class="fine">Preview only: your email is not sent or stored, and nothing here enters you into a prize draw. Scores stay on this device.</p><p class="fine tip-touch">On a phone: tap Share, then Add to Home Screen, to play full screen.</p></div></div>`);
   }
   function reset() {
-    mode='play'; time=score=oil=bankedOil=0; tutorialStep=0; tutIdx=0; tutFlags={}; tutHintCode=''; big=false; bigScale=1; ritual=null; ePressed=false; foreshadowSeen.clear(); ritualManual=0; i360GateShown=false; i360Done=false; hearts=3; energy=30; rescueCharges=1;checkpointX=lastSafeX=120;nextOilLife=100; routeBrighton=routeEast='';brightonAt=eastAt=0;brightonPrompted=false;upgrade='';weapon='latke'; room=null; camera=0; boss=null;musicOn=true;shoot.cool=0;oilCombo=0;oilComboUntil=0;bestOilCombo=0;currentPhase=0;completedPhases.clear();rainClock=1.2;oilSplashes=[];restedAt.clear();yofiBoostTaken=false;yofiReturnUsed=false;bedroomOilCollected=0;rainZoneActive=-1;invulnerableUntil=0;litCandles.clear();loopOilTaken.clear();bankedStops.clear();yofiCleared.clear();lifeguard.claimed=false;lifeguard.flexUntil=0;lifeguard.ringUntil=0;yofiBumpCooldown=0;
+    mode='play'; time=score=oil=bankedOil=0; tutorialStep=0; tutIdx=0; tutFlags={}; tutHintCode=''; big=false; bigScale=1; ritual=null; ePressed=false; foreshadowSeen.clear(); ritualManual=0; i360GateShown=false; i360Done=false; hearts=3; energy=30; rescueCharges=1;checkpointX=lastSafeX=120;nextOilLife=100; routeBrighton=routeEast='';brightonAt=eastAt=0;brightonPrompted=false;upgrade='';weapon='latke'; room=null; camera=0; boss=null;musicOn=true;shoot.cool=0;oilCombo=0;oilComboUntil=0;bestOilCombo=0;currentPhase=0;completedPhases.clear();rainClock=1.2;oilSplashes=[];restedAt.clear();yofiBoostTaken=false;yofiReturnUsed=false;bedroomOilCollected=0;rainZoneActive=-1;invulnerableUntil=0;litCandles.clear();loopOilTaken.clear();bankedStops.clear();yofiCleared.clear();lifeguard.claimed=false;lifeguard.flexUntil=0;lifeguard.ringUntil=0;yofiBumpCooldown=0;eggsReset();
     shots=[]; gusts=[]; oilDrops=[]; pickups=[]; enemies=[]; jars=[]; fishCaught=0;jumpPressed=false;crates.forEach(c=>c.hp=1);hatchFound.clear(); restSeen.clear();completedRooms.clear();secretClues.clear();hatches.length=0;
     Object.assign(hero,{x:120,y:GROUND-HERO_H,vx:0,vy:0,face:1,grounded:true,climbing:false,fallingPit:false,invuln:0,anim:0,dash:0,swing:null,onFryPlatform:null,airBoostUsed:false,looping:null});
     for(let x=520;x<16900;x+=280)pickups.push({x,y:GROUND-48-(Math.floor(x/280)%4===2?75:0),type:'oil',got:false});
@@ -648,7 +747,9 @@ input,textarea{-webkit-user-select:text;user-select:text}
     if(run&&(wk.naturalWidth||wk.width)){const w0=wk.naturalWidth||wk.width,h0=wk.naturalHeight||wk.height,fw=w0/4;c.drawImage(wk,frame*fw,0,fw,h0,-49,-53,98,106);hd=lookSrc.heads?lookSrc.heads.walk[frame]:{x:.58,y:.04};}
     else if(hr.naturalWidth||hr.width){c.drawImage(hr,-49,-53,98,106);hd=lookSrc.heads?lookSrc.heads.hero:{x:.5,y:.05};}
     else return;
-    if(look.head||look.neck)drawHeadgear(c,-49+hd.x*98,-53+hd.y*106);
+    const live=c===ctx;
+    if((look.head||look.neck)&&!(live&&eggs.hatGone))drawHeadgear(c,-49+hd.x*98,-53+hd.y*106);
+    if(live&&eggs.skin==='m')eggsHelm(c,-49+hd.x*98,-53+hd.y*106);
   }
   const lookRow=(label,items)=>`<div class="look-row"><span>${label}</span><div class="swatches">${items}</div></div>`;
   const swatches=(key,cols,names)=>cols.map((c,i)=>`<button type="button" class="sw" data-look="${key}:${i}" style="background:${c}" aria-label="${names} ${i+1}" aria-pressed="${look[key]===i}"></button>`).join('');
@@ -670,7 +771,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
     if(b){const [k,v]=b.dataset.look.split(':');look[k]=Number(v);document.querySelectorAll(`[data-look^="${k}:"]`).forEach(x=>x.setAttribute('aria-pressed',String(x===b)));buildLook();return;}
     if(e.target.closest('[data-look-random]')){look={skin:Math.floor(Math.random()*6),hair:Math.floor(Math.random()*6),coat:Math.floor(Math.random()*8),pants:Math.floor(Math.random()*8),head:Math.floor(Math.random()*5),accent:Math.floor(Math.random()*8),neck:Math.random()<.4?1:0};document.querySelectorAll('[data-look]').forEach(x=>{const [k,v]=x.dataset.look.split(':');x.setAttribute('aria-pressed',String(look[k]===Number(v)));});buildLook();return;}
     if(e.target.closest('[data-nick-auto]')){const ni=document.getElementById('lookNick');if(ni)ni.value=autoNick();return;}
-    if(e.target.closest('.look-go')){const ni=document.getElementById('lookNick'),nick=cleanNick(ni&&ni.value)||autoNick();playerName=nick;try{localStorage.setItem(LOOK_KEY,JSON.stringify(look));localStorage.setItem('lampRunNick',nick);}catch(err){}reset();}
+    if(e.target.closest('.look-go')){const ni=document.getElementById('lookNick'),nick=cleanNick(ni&&ni.value)||autoNick();playerName=nick;eggs.skin=eggSkinFor(nick);try{localStorage.setItem(LOOK_KEY,JSON.stringify(look));localStorage.setItem('lampRunNick',nick);}catch(err){}reset();}
   });
   /* ---- Wick, the little flame who teaches the first two scenes: speech bubbles, a bouncing pointer, cheers and sparkles. */
   const CHEERS=['Yay!','Nice one!','Brilliant!','You did it!','Wow!','Super!'];
@@ -699,7 +800,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
       else{ctx.moveTo(ax,ay+22);ctx.lineTo(ax-15,ay-8);ctx.lineTo(ax+15,ay-8);}
       ctx.closePath();ctx.stroke();ctx.fill();}
     const r=Math.round(16*u),wx=14+r*1.3,wy=uiTop+r*1.9;wickPos.x=wx;wickPos.y=wy;
-    drawWick(wx,wy,r,typeof tx==='number'?Math.sign(tx-camera-wx)||1:1,cheer);
+    drawWick(wx,wy,r,typeof tx==='number'?Math.sign(tx-camera-wx)||1:1,cheer);eggsWickHat(wx,wy,r);
     const kt=st.k[TOUCH?1:0],l4=(TOUCH||/^WALK|^TAP|^HOLD/.test(kt)?'':'PRESS ')+kt,text=cheer?wickCheer:WICK[tutIdx]||st.t;
     ctx.font='bold 15px Arial';const w1=ctx.measureText(text).width;ctx.font='bold 13px "Courier New",monospace';const w4=ctx.measureText(l4).width+20;
     const x0=14+r*2.7,bw=Math.min(W-x0-14,Math.max(w1,cheer?0:w4)+30),bh=Math.round((cheer?34:64)*u),y0=uiTop;
@@ -943,6 +1044,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
     if(mode==='rest'||mode==='pause'||mode==='title'||mode==='end')return;
     time+=dt;if(time>=540&&!ritual){finish(false,'timeout');return;}if(hero.invuln>0)hero.invuln-=dt;if(shoot.cool>0)shoot.cool-=dt;
     if(mode==='room'){updateRoom(dt);return;}
+    eggsUpdate(dt);
     if(mode==='bank'){updateBank(dt);return;}
     moveHero(dt);
     if(hero.looping)return;
@@ -1091,11 +1193,12 @@ input,textarea{-webkit-user-select:text;user-select:text}
     // oil spray and enemy gusts
     for(const d of oilDrops){let sx=d.x-cam;ctx.fillStyle='#ffd65c';ctx.beginPath();ctx.ellipse(sx,d.y,6,10,.25,0,7);ctx.fill()}
     for(const g of gusts){let sx=g.x-cam;ctx.fillStyle=g.foe==='elephant'?'#e8c58c':'#d4e4ff';ctx.shadowColor=g.foe==='elephant'?'#c08a4a':'#8ecfff';ctx.shadowBlur=14;ctx.beginPath();ctx.arc(sx,g.y,13,0,7);ctx.fill();ctx.shadowBlur=0;}
-    for(const s of shots){ctx.fillStyle=s.type==='oil'?'#f78e40':'#ffe7b2';ctx.shadowColor=s.type==='oil'?'#fa7b38':'#ffc65a';ctx.shadowBlur=14;ctx.beginPath();ctx.ellipse(s.x-cam,s.y,s.type==='oil'?19:14,s.type==='oil'?12:8,0,0,7);ctx.fill();ctx.shadowBlur=0;}
+    for(const s of shots){ctx.fillStyle=s.type==='oil'?'#f78e40':eggs.skin==='j'?'#ff8fb4':'#ffe7b2';ctx.shadowColor=s.type==='oil'?'#fa7b38':eggs.skin==='j'?'#ff4f86':'#ffc65a';ctx.shadowBlur=14;ctx.beginPath();ctx.ellipse(s.x-cam,s.y,s.type==='oil'?19:14,s.type==='oil'?12:8,0,0,7);ctx.fill();ctx.shadowBlur=0;}
     if(isDown('KeyZ')&&energy>0||hero.dash>0){ctx.strokeStyle='rgba(255,240,190,.7)';ctx.lineWidth=3;for(let i=0;i<10;i++){let yy=120+i*26,xx=((i*113-time*560-camera*.9)%(W+100)+W+100)%(W+100);ctx.beginPath();ctx.moveTo(xx,yy);ctx.lineTo(xx+48+(i%3)*12,yy);ctx.stroke();}ctx.strokeStyle='rgba(238,111,73,.8)';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(hero.x-cam-40,hero.y+42);ctx.lineTo(hero.x-cam-112,hero.y+42);ctx.stroke();}
     if(time<invulnerableUntil&&!hero.looping){ctx.save();ctx.strokeStyle='rgba(255,224,98,.9)';ctx.lineWidth=4;ctx.shadowColor='#ffe266';ctx.shadowBlur=20;ctx.beginPath();ctx.ellipse(hero.x-cam,hero.y+36,58,61,0,0,Math.PI*2);ctx.stroke();ctx.restore();}
     if(!hero.looping)drawHero(hero.x-cam,hero.y);
     if(time<lifeguard.ringUntil&&!hero.looping){const rx=hero.x-cam,ry=hero.y+36,a=time*3;ctx.save();ctx.translate(rx,ry);ctx.rotate(a);ctx.lineWidth=7;for(let k=0;k<8;k++){ctx.strokeStyle=k%2?'#ffffff':'#e0433a';ctx.beginPath();ctx.arc(0,0,58,k*Math.PI/4,(k+1)*Math.PI/4);ctx.stroke();}ctx.restore();}
+    eggsDraw(cam);
     drawToast();
   }
   function drawFacing(img,x,y,w,h,dir){if(!img?.complete||!img.naturalWidth)return;ctx.save();if(dir<0){ctx.translate(x,0);ctx.scale(-1,1);ctx.drawImage(img,-w/2,y,w,h);}else ctx.drawImage(img,x-w/2,y,w,h);ctx.restore();}

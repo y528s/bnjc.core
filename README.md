@@ -50,6 +50,10 @@ Wick, a little flame, teaches the first two scenes. A speech bubble shows one st
 
 Each scene has one goal, shown in the panel at the top left with your progress and its points: beat a baddie in the courtyard, collect all five wraps at Yofi, light four lanterns in the Lanes, a flawless tea party in the Pavilion Gardens (no hits), dodge three gull attacks on the promenade, gather 30 oil in the underpass, rest in the guest-room bed, bank your oil at the second Yofi, beat the Sea Life Shadow, beat the Greek war elephant on the road east, and climb the i360 to its top platform. The baddies wear Greek helmets because the Chanukah story is about the Greek empire.
 
+## Hidden surprises
+
+There are a few small secrets in the run. Nothing in them is needed to finish, and they only add a little fun. Wick is worth a tap, and so is a nickname with a bit of history in it.
+
 ## Scoring
 
 Oil drops are 10 points each, with a small bonus for streaks. Defeating baddies (a latke, or a jump-stomp after they open), dodging attacks, clean jumps over furniture, clearing chapters and lighting each chanukiah branch also score. Oil you bank is kept safe and is worth points at the end. The leaderboard in this preview is local to one browser on one device.
