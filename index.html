@@ -205,7 +205,7 @@ body:not(.playing) .touch{display:none}
     [2680,4540,8320,10440,12080,15680,16480].forEach(x=>pickups.push({x,y:GROUND-150,type:'shield',got:false}));
     boss={x:17200,y:GROUND-HERO_H,hp:12,attack:1.6,phase:'watch',alive:true,volley:0,lanes:[],fireIdx:0,fireAt:0};
     hide(); hud.classList.remove('hidden');message('← → to move through the BNJC courtyard.',6);document.querySelector('#music').textContent='♫ Music on';musicStart(); lastFrame=performance.now(); requestAnimationFrame(frame);
-    if(portraitPhone.matches)setTimeout(pause,0);
+    if(portraitPhone.matches){hudUpdate();draw();setTimeout(pause,0);}
   }
   function paintFaces(){document.querySelectorAll('.face canvas').forEach((c,i)=>{let g=c.getContext('2d'),sw=art.face.naturalWidth/3;if(art.face.complete&&sw)g.drawImage(art.face,i*sw,0,sw,art.face.naturalHeight,0,0,90,90)})}
   function playSfx(freq=660,duration=.11,wave='sine') { if(!audio)return; let o=audio.ctx.createOscillator(),g=audio.ctx.createGain();o.type=wave;o.frequency.value=freq;g.gain.setValueAtTime(.0001,audio.ctx.currentTime);g.gain.exponentialRampToValueAtTime(.12,audio.ctx.currentTime+.012);g.gain.exponentialRampToValueAtTime(.0001,audio.ctx.currentTime+duration);o.connect(g);g.connect(audio.fx);o.start();o.stop(audio.ctx.currentTime+duration+.02); }
