@@ -17,7 +17,7 @@ Enter a name and email to start. This preview does not send or store the email, 
 | Z | Sprint |
 | Shift | Dash |
 | Up / Down | Climb a ladder / drop a level |
-| E | Go through the glowing Yofi door to bank your oil, rest in the guest-room bed, take the lifeguard's shield, light the chanukiah |
+| E | Go through a BNJC door (bank oil, refill energy, save your spot), take the lifeguard's shield, light the chanukiah |
 | Esc | Pause |
 
 On a phone, hold it sideways. The controls float over the bottom corners: left thumb for climb, left and right; right thumb for jump, throw, bank/use, sprint, dash and weapon. If you turn the phone upright, the game pauses and asks you to turn it back.
@@ -30,9 +30,17 @@ After the Temple Snuffer falls, walk to the chanukiah. Stand under the raised sh
 
 After your name and email, pick your runner: skin tone, hair colour, jacket and trousers colours, a head covering (none, kippah, beanie, cap or headscarf) and a scarf, or press "Surprise me". Your choice is remembered on your device.
 
-## Banking and resting
+## BNJC doors: bank, rest and save your spot
 
-Oil you carry can be lost if you are hurt. Walk through the glowing door at Yofi (press E, or USE on a phone) and watch your oil pour into the jar and lock away: banked oil is safe and is what lights the chanukiah. Energy and a heart come back only by resting in the guest-room bed (press E at the bed).
+Oil you carry can be lost if you are hurt. About every other scene there is a navy BNJC door. Walk to it and press E (USE on a phone, or up). Inside, your oil pours into a jar and locks away (banked oil is safe and is what lights the chanukiah), your energy refills, some doors give a heart, and your spot is saved: if you are caught you restart at the last door you used.
+
+## Yofi coffee, oil shots and the lifeguard
+
+Drink a Yofi coffee to grow to 1.5 times your size; the next hit shrinks you back instead of costing a heart. A latke that touches a loose oil drop collects it for double. Stand by the promenade lifeguard and press E for a 10-second life-ring shield.
+
+## Your nickname
+
+The runner picker has a nickname box (press Auto for a friendly one). The scoreboard shows the nickname, not your name.
 
 ## The tutorial
 
